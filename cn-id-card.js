@@ -30,6 +30,10 @@ var errInfo = {
     'invalid_tail': {
         err_code: 4005,
         err_message: '身份证尾号和默认生成的尾号不匹配'
+    },
+    'err_format': {
+        err_code: 4006,
+        err_message: '身份证格式不正确'
     }
 }
 
@@ -44,37 +48,41 @@ function getCurrentTime(){
 
 function IdCard(id_card) {
     this.id_card = id_card;
-    thid.gender = 'male';
-    thid.err = null;
+    this.gender = 'male';
+    this.err = null;
 }
 
 IdCard.prototype.isInvalid = function() {
     var normal_length = 18
     if(!this.id_card) {
         this.err =  errInfo['empty'];
-        return false;
+        return true;
     } 
-    if(thid.id_card.length>length) {
+    if(this.id_card.length > normal_length) {
         this.err =  errInfo['too_long'];    
-        return false
+        return true
     }
-    if(this.id_card.length<length) {
+    if(this.id_card.length < normal_length) {
         this.err =  errInfo['too_short'];    
-        return false        
-    }
-
-    if(!/^\d{17}([0-9]|[Xx])$/.test(this.id_card)) {
-        this.err =  errInfo['too_short'];    
-        return false    
+        return true        
     }
 
     if(this.getBirthday() > getCurrentTime()) {
         this.err =  errInfo['not_born'];    
-        return false    
+        return true    
+    }
+
+    if(!/^\d{17}([0-9Xx])$/.test(this.id_card)) {
+        this.err =  errInfo['err_format'];    
+        return true    
     }
 
     // TODO verify place and tail
-    return true
+    return false
+};
+
+IdCard.prototype.getError = function() {
+    return this.err;
 };
 
 IdCard.prototype.getAge = function() {
@@ -137,4 +145,4 @@ IdCard.prototype.isFemale = function () {
     return this.getGender() === 'female';
 };
 
-module.exports = exports;
+module.exports = IdCard;
