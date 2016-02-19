@@ -1,7 +1,7 @@
 {
   "name": "cn-id-card",
   "preferGlobal": "true",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "中国身份证相关的工具函数",
   "keywords": [
     "chinese id card",
@@ -18,15 +18,12 @@
     "url": "git+https://github.com/sunln/cn-id-card.git"
   },
   "scripts": {
-    "test": "eslint . && node test | tap-spec",
-    "test-coverage": "istanbul cover test/index.js --report lcovonly | tap-spec"
+    "test": "mocha cn-id-card.test.js"
   },
   "bugs": {
     "url": "https://github.com/sunln/cn-id-card/issues"
   },
   "homepage": "https://github.com/sunln/cn-id-card#readme",
-  "_npmVersion": "2.11.1",
-  "_nodeVersion": "2.3.0",
   "_npmUser": {
     "name": "SunLn",
     "email": "dengchenhua@gmail.com"
