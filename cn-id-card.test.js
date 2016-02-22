@@ -25,16 +25,34 @@ describe('check id card', function() {
         user2.getError().should.have.property('err_message').equal('身份证长度过短')       
     });
 
-    it('birthdy check ', function() {
-        var user = new IdCard('11000020810419093X');
-        user.isInvalid().should.be.equal(true);
-        user.getError().should.not.be.equal(null);   
-        user.getError().should.have.property('err_code').equal(4003)
-        user.getError().should.have.property('err_message').equal('出生日期大于当前日期') 
+    describe('birthdy check', function() {
+        it('birthdy check: invalid month ', function() {
+            var user = new IdCard('12000020031331093X');
+            user.isInvalid().should.be.equal(true);
+            user.getError().should.not.be.equal(null);   
+            user.getError().should.have.property('err_code').equal(4007)
+            user.getError().should.have.property('err_message').equal('错误的日期') 
 
-        user = new IdCard('12000020060218093X');
-        user.isInvalid().should.be.equal(false);
-    });   
+            user = new IdCard('12000020030031093X');
+            user.isInvalid().should.be.equal(true);
+        });
+        it('birthdy check: invalid date ', function() {    
+            user = new IdCard('12000020030231093X');
+            user.isInvalid().should.be.equal(true); 
+            user.getError().should.have.property('err_code').equal(4007)
+            user.getError().should.have.property('err_message').equal('错误的日期') 
+
+            user = new IdCard('12000020030133093X');
+            user.isInvalid().should.be.equal(true);
+        });
+        it('birthdy check: born after today ', function() {    
+            user = new IdCard('11000020810419093X');
+            user.isInvalid().should.be.equal(true);
+            user.getError().should.not.be.equal(null);   
+            user.getError().should.have.property('err_code').equal(4003)
+            user.getError().should.have.property('err_message').equal('出生日期大于当前日期') 
+        });   
+    });    
 
     it('error format check should be work well', function() {
         var user = new IdCard('11000019810419093S');

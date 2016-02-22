@@ -6,6 +6,9 @@
     p性别
 */
 
+var moment = require('moment');
+var province = require('./data/id_card_province');
+
 var errInfo = {
     'empty': {
         err_code: 4000,
@@ -34,7 +37,11 @@ var errInfo = {
     'err_format': {
         err_code: 4006,
         err_message: '身份证格式不正确'
-    }
+    },
+    'err_birthday': {
+        err_code: 4007,
+        err_message: '错误的日期'
+    }    
 }
 
 function getCurrentTime(){
@@ -67,7 +74,13 @@ IdCard.prototype.isInvalid = function() {
         return true        
     }
 
-    if(this.getBirthday() > getCurrentTime()) {
+    if(!moment(this.getBirthday()).isValid()){
+        this.err =  errInfo['err_birthday'];    
+        return true    
+    }
+
+    var now = moment().format('YYYYMMDD');
+    if(moment(this.getBirthday()).isAfter(now)) {
         this.err =  errInfo['not_born'];    
         return true    
     }
@@ -77,6 +90,11 @@ IdCard.prototype.isInvalid = function() {
         return true    
     }
 
+    if (!this.getProvince()) {
+        this.err =  errInfo['invalid_place'];    
+        return true    
+    }
+        
     // TODO verify place and tail
     return false
 };
@@ -90,7 +108,7 @@ IdCard.prototype.getAge = function() {
 };
 
 IdCard.prototype.getBirthday = function() {
-    return Number(this.id_card.substr(6,8))
+    return this.id_card.substr(6,8)
 };
 
 IdCard.prototype.getYear = function() {
@@ -144,5 +162,10 @@ IdCard.prototype.isMale = function () {
 IdCard.prototype.isFemale = function () {
     return this.getGender() === 'female';
 };
+
+
+IdCard.prototype.getProvince  = function() {
+    return province[this.id_card.slice(0,2)];
+}
 
 module.exports = IdCard;
