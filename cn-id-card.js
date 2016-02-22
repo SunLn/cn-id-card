@@ -7,6 +7,7 @@
 */
 
 var moment = require('moment');
+var province = require('./data/id_card_province');
 
 var errInfo = {
     'empty': {
@@ -89,6 +90,11 @@ IdCard.prototype.isInvalid = function() {
         return true    
     }
 
+    if (!this.getProvince()) {
+        this.err =  errInfo['invalid_place'];    
+        return true    
+    }
+        
     // TODO verify place and tail
     return false
 };
@@ -156,5 +162,10 @@ IdCard.prototype.isMale = function () {
 IdCard.prototype.isFemale = function () {
     return this.getGender() === 'female';
 };
+
+
+IdCard.prototype.getProvince  = function() {
+    return province[this.id_card.slice(0,2)];
+}
 
 module.exports = IdCard;
